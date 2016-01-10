@@ -1,5 +1,5 @@
 # MirrorObject
-Mirroring object's properties automatically.
+Mirroring dynamic properties automatically.
 
 [![CI Status](http://img.shields.io/travis/Matzo/MirrorObject.svg?style=flat)](https://travis-ci.org/Matzo/MirrorObject)
 [![Version](https://img.shields.io/cocoapods/v/MirrorObject.svg?style=flat)](http://cocoapods.org/pods/MirrorObject)
