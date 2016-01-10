@@ -1,0 +1,6 @@
+framework module MirrorObject {
+  umbrella header "MirrorObject-umbrella.h"
+
+  export *
+  module * { export * }
+}

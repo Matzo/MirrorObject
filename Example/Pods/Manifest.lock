@@ -1,0 +1,14 @@
+PODS:
+  - MirrorObject (0.1.0)
+
+DEPENDENCIES:
+  - MirrorObject (from `../`)
+
+EXTERNAL SOURCES:
+  MirrorObject:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  MirrorObject: 4d0244c2fe9c651777e3605e60e4ffd25214ecbf
+
+COCOAPODS: 0.39.0
