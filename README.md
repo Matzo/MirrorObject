@@ -25,6 +25,8 @@ print(b.followers) // -> 1
 User class is defined as following.
 
 ```swift
+import MirrorObject
+
 class User: NSObject, MirrorObject {
     var id: String
     dynamic var followers: Int
