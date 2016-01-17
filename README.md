@@ -7,6 +7,45 @@ Mirroring dynamic properties automatically.
 [![Platform](https://img.shields.io/cocoapods/p/MirrorObject.svg?style=flat)](http://cocoapods.org/pods/MirrorObject)
 
 ## Usage
+Update an dynamic property, then it will be reflected to other object which has same identifier.
+
+```swift
+let a = User("u1", followers: 0)
+let b = User("u1", followers: 0)
+
+print(a.followers) // -> 0
+print(b.followers) // -> 0
+
+a.followers += 1
+
+print(a.followers) // -> 1
+print(b.followers) // -> 1
+```
+
+User class is defined as following.
+
+```swift
+class User: NSObject, MirrorObject {
+    var id: String
+    dynamic var followers: Int
+
+    init(id: String, followers: Int) {
+        self.id        = id
+        self.followers = followers
+
+        super.init()
+        self.startMirroring()
+    }
+
+    deinit {
+        self.stopMirroring()
+    }
+
+    func identifier() -> String {
+        return id
+    }
+}
+```
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
