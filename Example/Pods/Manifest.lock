@@ -6,9 +6,9 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   MirrorObject:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
-  MirrorObject: 4d0244c2fe9c651777e3605e60e4ffd25214ecbf
+  MirrorObject: 2f9f1c23fae9e5bc378e8371086795aabebd7fb8
 
-COCOAPODS: 0.39.0
+COCOAPODS: 0.39.0.beta.4

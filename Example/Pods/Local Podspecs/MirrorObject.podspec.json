@@ -1,8 +1,8 @@
 {
   "name": "MirrorObject",
   "version": "0.1.0",
-  "summary": "Mirroring object's properties automatically.",
-  "description": "Mirroring object's properties automatically.",
+  "summary": "Mirroring dynamic properties automatically.",
+  "description": "Copy dynamic properties of objects that have same identifier.",
   "homepage": "https://github.com/Matzo/MirrorObject",
   "license": "MIT",
   "authors": {
