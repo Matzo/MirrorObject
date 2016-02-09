@@ -9,9 +9,8 @@
 import Foundation
 
 private var MirrorObject_MirrorObserverKey = "MirrorObject_MirrorObserverKey"
-public protocol MirrorObject: NSObjectProtocol {
-    func identifier() -> String
-//    func mirrorProperties() -> [String]
+@objc public protocol MirrorObject: NSObjectProtocol {
+    optional func identifier() -> String
 }
 extension MirrorObject {
     
@@ -27,30 +26,24 @@ extension MirrorObject {
     }
     
     // MARK: - Notification
-    func mirrorNotificationName() -> String {
-        return "MirrorObject_\(NSStringFromClass(Self))_\(self.identifier())".componentsSeparatedByString(".").last ?? self.identifier()
+    func mirrorNotificationName() -> String? {
+        if let identifier = self.identifier?(), className = NSStringFromClass(Self).componentsSeparatedByString(".").last {
+            return "MirrorObject_\(className)_\(identifier)"
+        } else {
+            return nil
+        }
     }
     
     func receiveMirror(notification: NSNotification) {
         if self === notification.object {
             return
         }
+        guard let fromObj = notification.object as? NSObject else { return }
+        guard let keyPath = notification.userInfo?["keyPath"] as? String else { return }
         
         let observer = self.observer
         self.observer = nil
-        
-        if let obj = notification.object as? Self where obj.identifier() == self.identifier() {
-            
-            self.propertyNames().forEach({ (key) -> () in
-                let newValue = (obj as? NSObject)?.valueForKey(key)
-                let oldValue = (self as? NSObject)?.valueForKey(key)
-                if "\(newValue)" != "\(oldValue)" {
-                    (self as? NSObject)?.setValue(newValue, forKey: key)
-                }
-            })
-            
-        }
-        
+        (self as? NSObject)?.setValue(fromObj.valueForKeyPath(keyPath), forKeyPath: keyPath)
         self.observer = observer
     }
     
@@ -68,41 +61,67 @@ extension MirrorObject {
     }
     
     // MARK: - Public Methods
-    public func mirror() {
+    public func mirror(keyPath: String) {
+        guard let notiName = self.mirrorNotificationName() else { return }
+
         if let _ = self.observer {
-            NSNotificationCenter.defaultCenter().postNotificationName(mirrorNotificationName(), object: self, userInfo: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName(notiName, object: self, userInfo: ["keyPath": keyPath])
         }
     }
     
     public func startMirroring() {
-        NSNotificationCenter.defaultCenter().addObserverForName(mirrorNotificationName(), object: nil, queue: NSOperationQueue.mainQueue()) { [weak self] (noti) -> Void in
+        guard let notiName = self.mirrorNotificationName() else { return }
+
+        NSNotificationCenter.defaultCenter().addObserverForName(notiName, object: nil, queue: NSOperationQueue.mainQueue()) { [weak self] (noti) -> Void in
             self?.receiveMirror(noti)
         }
         
         let observer = MirrorObserver()
-        self.propertyNames().forEach { (key) -> () in
-            guard let obj = self as? NSObject else {
-                return
-            }
-            obj.addObserver(observer, forKeyPath: key, options: [.New, .Old], context: nil)
-        }
+        self.observeDynamicProperties(self, observer: observer, baseKeyPath: nil)
         self.observer = observer
     }
     
-    public func stopMirroring() {
-        if let observer = self.observer, object = self as? NSObject {
-            self.propertyNames().forEach({ (key) -> () in
-                object.removeObserver(observer, forKeyPath: key)
-            })
-            self.observer = nil
+    private func observeDynamicProperties(obj:MirrorObject, observer: MirrorObserver, baseKeyPath: String?) {
+        guard let _self = self as? NSObject else {
+            return
         }
+        obj.propertyNames().forEach { (key) -> () in
+            
+            let keyPath: String
+            if let base = baseKeyPath {
+                keyPath = "\(base).\(key)"
+            } else {
+                keyPath = key
+            }
+            
+            if let value = _self.valueForKeyPath(keyPath) as? MirrorObject {
+                self.observeDynamicProperties(value, observer: observer, baseKeyPath: keyPath)
+            } else {
+                _self.addObserver(observer, forKeyPath: keyPath, options: [.New, .Old], context: nil)
+                observer.observingKeys.append(keyPath)
+            }
+        }
+    }
+    private func removeDynamicPropertiesObserver() {
+        if let observer = self.observer, _self = self as? NSObject {
+            for keyPath in observer.observingKeys {
+                _self.removeObserver(observer, forKeyPath: keyPath)
+            }
+            observer.observingKeys.removeAll()
+        }
+    }
+    
+    public func stopMirroring() {
+        self.removeDynamicPropertiesObserver()
+        self.observer = nil
     }
 }
 
 class MirrorObserver: NSObject {
+    var observingKeys: [String] = []
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if let asObj = object as? MirrorObject {
-            asObj.mirror()
+        if let object = object as? MirrorObject, keyPath = keyPath {
+            object.mirror(keyPath)
         }
     }
 }

@@ -98,6 +98,16 @@ class MirrorObjectTests: XCTestCase {
         }
     }
     
+    func testNestedObject() {
+        let parent1 = ParentMockObject(id: "1", child: ChildMockObject(type: "normal", value: 100, createdAt: 12345))
+        let parent2 = ParentMockObject(id: "1", child: ChildMockObject(type: "normal", value: 100, createdAt: 12345))
+        
+        parent2.dynamicChild.value = 90
+        
+        XCTAssertEqual(parent1.dynamicChild.value, 90)
+        
+    }
+    
 }
 
 class MockObject: NSObject, MirrorObject {
@@ -144,10 +154,39 @@ class MockObject: NSObject, MirrorObject {
     func identifier() -> String {
         return id
     }
-    
-    func mirrorProperties() -> [String] {
-        return []
-    }
 }
 
 
+class ParentMockObject: NSObject, MirrorObject {
+    var id : String
+    dynamic var dynamicChild: ChildMockObject
+    
+    init(id: String, child: ChildMockObject) {
+        self.id = id
+        self.dynamicChild = child
+        
+        super.init()
+        self.startMirroring()
+    }
+    
+    deinit {
+        self.stopMirroring()
+    }
+    
+    func identifier() -> String {
+        return id
+    }
+}
+
+class ChildMockObject: NSObject, MirrorObject {
+    dynamic var type: String
+    dynamic var value: Int
+    var createdAt: Int64
+    init(type: String, value: Int, createdAt: Int64) {
+        self.type      = type
+        self.value     = value
+        self.createdAt = createdAt
+
+        super.init()
+    }
+}
