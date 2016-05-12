@@ -55,6 +55,46 @@ class MirrorObjectTests: XCTestCase {
         XCTAssertEqual(obj1.createdAt, 123456789)
     }
     
+    func testMirrorInit() {
+        let data = NSString(string: "data").dataUsingEncoding(NSUTF8StringEncoding)!
+        let data2 = NSString(string: "data2").dataUsingEncoding(NSUTF8StringEncoding)!
+        let obj1 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
+        let obj2 = MockObject(id: "1", name: "Jack2", count: 4, float: 1.2, size: CGSizeMake(3, 4), data: data2, createdAt: 123456790)
+        
+        XCTAssertEqual(obj1.dynamicName, "Jack")
+        XCTAssertEqual(obj1.name, "Jack")
+        XCTAssertEqual(obj1.dynamicCount, 3)
+        XCTAssertEqual(obj1.count, 3)
+        XCTAssertEqual(obj1.dynamicFloat, 1.1)
+        XCTAssertEqual(obj1.float, 1.1)
+        XCTAssertEqual(obj1.dynamicSize, CGSizeMake(1, 2))
+        XCTAssertEqual(obj1.size, CGSizeMake(1, 2))
+        XCTAssertEqual(obj1.dynamicData, data)
+        XCTAssertEqual(obj1.data, data)
+        XCTAssertEqual(obj1.dynamicCreatedAt, 123456789)
+        XCTAssertEqual(obj1.createdAt, 123456789)
+        
+        obj2.mirror("dynamicName")
+        obj2.mirror("dynamicCount")
+        obj2.mirror("dynamicFloat")
+        obj2.mirror("dynamicSize")
+        obj2.mirror("dynamicData")
+        obj2.mirror("dynamicCreatedAt")
+        XCTAssertEqual(obj1.dynamicName, "Jack2")
+        XCTAssertEqual(obj1.name, "Jack")
+        XCTAssertEqual(obj1.dynamicCount, 4)
+        XCTAssertEqual(obj1.count, 3)
+        XCTAssertEqual(obj1.dynamicFloat, 1.2)
+        XCTAssertEqual(obj1.float, 1.1)
+        XCTAssertEqual(obj1.dynamicSize, CGSizeMake(3, 4))
+        XCTAssertEqual(obj1.size, CGSizeMake(1, 2))
+        XCTAssertEqual(obj1.dynamicData, data2)
+        XCTAssertEqual(obj1.data, data)
+        XCTAssertEqual(obj1.dynamicCreatedAt, 123456790)
+        XCTAssertEqual(obj1.createdAt, 123456789)
+    }
+    
+    
     func testPerformanceCreateObjects() {
         var objects: [MockObject] = []
         self.measureBlock() {
