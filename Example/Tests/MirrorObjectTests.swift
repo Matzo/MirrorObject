@@ -166,6 +166,10 @@ class MockObject: NSObject, MirrorObject {
     var size: CGSize
     var data: NSData
     var createdAt: Int64 // ms
+    var doCrash: String {
+        assertionFailure("shouldn't access here")
+        return ""
+    }
     
     init(id: String, name: String, count: Int, float: CGFloat, size: CGSize, data: NSData, createdAt: Int64) {
         self.id = id

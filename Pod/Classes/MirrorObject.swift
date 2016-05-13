@@ -54,7 +54,12 @@ extension MirrorObject {
         for i in 0..<Int(count) {
             let prop = properties[i]
             if let name = NSString(UTF8String: property_getName(prop)) as? String {
-                names.append(name)
+                
+                if let props = NSString(UTF8String: property_getAttributes(prop))?.rangeOfString(",R")
+                    where props.location == NSNotFound
+                {
+                    names.append(name)
+                }
             }
         }
         return names
