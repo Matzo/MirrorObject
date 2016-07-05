@@ -94,7 +94,6 @@ class MirrorObjectTests: XCTestCase {
         XCTAssertEqual(obj1.createdAt, 123456789)
     }
     
-    
     func testPerformanceCreateObjects() {
         var objects: [MockObject] = []
         self.measureBlock() {
@@ -148,6 +147,25 @@ class MirrorObjectTests: XCTestCase {
         
     }
     
+    func testExcludProperties() {
+        let data = NSString(string: "data").dataUsingEncoding(NSUTF8StringEncoding)!
+        let obj1 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
+        let obj2 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
+        
+        obj2.excP1 = 20
+        obj2.excP2 = "change"
+        XCTAssertEqual(obj1.excP1, 10)
+        XCTAssertEqual(obj1.excP2, "p2")
+    }
+    
+    func testMirrorDisable() {
+        let data = NSString(string: "data").dataUsingEncoding(NSUTF8StringEncoding)!
+        let obj1 = MockObject(id: "dummy", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
+        let obj2 = MockObject(id: "dummy", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
+        
+        obj2.dynamicName = "Foo"
+        XCTAssertEqual(obj1.dynamicName, "Jack")
+    }
 }
 
 class MockObject: NSObject, MirrorObject {
@@ -160,16 +178,20 @@ class MockObject: NSObject, MirrorObject {
     dynamic var dynamicData: NSData
     dynamic var dynamicCreatedAt: Int64 // ms
     
+    dynamic var excP1: Int = 10
+    dynamic var excP2: String = "p2"
+    
+    dynamic var doCrash: String {
+        assertionFailure("shouldn't access here")
+        return ""
+    }
+
     var name: String
     var count: Int
     var float: CGFloat
     var size: CGSize
     var data: NSData
     var createdAt: Int64 // ms
-    var doCrash: String {
-        assertionFailure("shouldn't access here")
-        return ""
-    }
     
     init(id: String, name: String, count: Int, float: CGFloat, size: CGSize, data: NSData, createdAt: Int64) {
         self.id = id
@@ -186,7 +208,7 @@ class MockObject: NSObject, MirrorObject {
         self.size = size
         self.data = data
         self.createdAt = createdAt
-
+        
         super.init()
         self.startMirroring()
     }
@@ -197,6 +219,14 @@ class MockObject: NSObject, MirrorObject {
     
     func identifier() -> String {
         return id
+    }
+    
+    func excludeProperties() -> [String] {
+        return ["excP2", "excP1"]
+    }
+
+    func isMirrorDisabled() -> Bool {
+        return id == "dummy"
     }
 }
 

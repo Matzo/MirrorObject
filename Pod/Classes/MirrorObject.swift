@@ -11,6 +11,8 @@ import Foundation
 private var MirrorObject_MirrorObserverKey = "MirrorObject_MirrorObserverKey"
 @objc public protocol MirrorObject: NSObjectProtocol {
     optional func identifier() -> String
+    optional func excludeProperties() -> [String]
+    optional func isMirrorDisabled() -> Bool
 }
 extension MirrorObject {
     
@@ -51,9 +53,19 @@ extension MirrorObject {
         var count: UInt32 = 0
         var names: [String] = []
         let properties = class_copyPropertyList(Self.self, &count)
-        for i in 0..<Int(count) {
+        let excludes = excludeProperties?() ?? []
+
+        // use label for performance
+        props: for i in 0..<Int(count) {
             let prop = properties[i]
             if let name = NSString(UTF8String: property_getName(prop)) as? String {
+                
+                // exlude specified properties
+                for i in 0..<excludes.count {
+                    if name == excludes[i] {
+                        continue props
+                    }
+                }
                 
                 if let props = NSString(UTF8String: property_getAttributes(prop))?.rangeOfString(",R")
                     where props.location == NSNotFound
@@ -68,6 +80,7 @@ extension MirrorObject {
     // MARK: - Public Methods
     public func mirror(keyPath: String) {
         guard let notiName = self.mirrorNotificationName() else { return }
+        if isMirrorDisabled?() ?? false { return }
 
         if let _ = self.observer {
             NSNotificationCenter.defaultCenter().postNotificationName(notiName, object: self, userInfo: ["keyPath": keyPath])
