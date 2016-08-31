@@ -43,10 +43,9 @@ extension MirrorObject {
         guard let fromObj = notification.object as? NSObject else { return }
         guard let keyPath = notification.userInfo?["keyPath"] as? String else { return }
         
-        let observer = self.observer
-        self.observer = nil
+        self.observer?.enabled = false
         (self as? NSObject)?.setValue(fromObj.valueForKeyPath(keyPath), forKeyPath: keyPath)
-        self.observer = observer
+        self.observer?.enabled = true
     }
     
     func propertyNames() -> [String] {
@@ -98,7 +97,13 @@ extension MirrorObject {
         self.observeDynamicProperties(self, observer: observer, baseKeyPath: nil)
         self.observer = observer
     }
-    
+
+    public func stopMirroring() {
+        self.removeDynamicPropertiesObserver()
+        self.observer = nil
+    }
+
+    // MARK: - Private Methods
     private func observeDynamicProperties(obj:MirrorObject, observer: MirrorObserver, baseKeyPath: String?) {
         guard let _self = self as? NSObject else {
             return
@@ -128,16 +133,14 @@ extension MirrorObject {
             observer.observingKeys.removeAll()
         }
     }
-    
-    public func stopMirroring() {
-        self.removeDynamicPropertiesObserver()
-        self.observer = nil
-    }
 }
 
 class MirrorObserver: NSObject {
     var observingKeys: [String] = []
+    var enabled: Bool = true
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        guard enabled else { return }
+
         if let object = object as? MirrorObject, keyPath = keyPath {
             object.mirror(keyPath)
         }
