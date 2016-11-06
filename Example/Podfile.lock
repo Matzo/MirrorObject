@@ -1,14 +1,16 @@
 PODS:
-  - MirrorObject (0.1.0)
+  - MirrorObject (0.1.4)
 
 DEPENDENCIES:
   - MirrorObject (from `../`)
 
 EXTERNAL SOURCES:
   MirrorObject:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
-  MirrorObject: 2f9f1c23fae9e5bc378e8371086795aabebd7fb8
+  MirrorObject: 786e8a8da7e066a76030225a15377ac5af928aae
 
-COCOAPODS: 0.39.0.beta.4
+PODFILE CHECKSUM: cf7ef53c595363ea894c0962880d02aef9cee946
+
+COCOAPODS: 1.1.1

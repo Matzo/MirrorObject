@@ -25,7 +25,7 @@ class ViewController: UIViewController {
         print("after")
         let o1 = Foo(id: "1", name: "Jack", followers: 10, location: "Yamato City")
         o1.name = "Jack.H"
-        o1.followers++
+        o1.followers += 1
         o1.location = "Chiba"
         for obj in [obj1, obj2] {
             print(obj.id, obj.name, obj.followers, obj.location)

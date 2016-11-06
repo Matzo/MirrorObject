@@ -1,12 +1,10 @@
 source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
-target 'MirrorObject_Example', :exclusive => true do
+target 'MirrorObject_Example' do
   pod "MirrorObject", :path => "../"
 end
 
-target 'MirrorObject_Tests', :exclusive => true do
+target 'MirrorObject_Tests' do
   pod "MirrorObject", :path => "../"
-
-  
 end

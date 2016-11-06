@@ -20,9 +20,9 @@ class MirrorObjectTests: XCTestCase {
     }
     
     func testMirror() {
-        let data = NSString(string: "data").dataUsingEncoding(NSUTF8StringEncoding)!
-        let obj1 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
-        let obj2 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
+        let data = "data".data(using: String.Encoding.utf8)!
+        let obj1 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSize(width: 1, height: 2), data: data, createdAt: 123456789)
+        let obj2 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSize(width: 1, height: 2), data: data, createdAt: 123456789)
         
         obj2.dynamicName = "Foo"
         obj2.name = "Foo"
@@ -39,13 +39,13 @@ class MirrorObjectTests: XCTestCase {
         XCTAssertEqual(obj1.dynamicFloat, 2.3)
         XCTAssertEqual(obj1.float, 1.1)
         
-        obj2.dynamicSize = CGSizeMake(10.1, 12.1)
-        obj2.size = CGSizeMake(10.1, 12.1)
-        XCTAssertEqual(obj1.dynamicSize, CGSizeMake(10.1, 12.1))
-        XCTAssertEqual(obj1.size, CGSizeMake(1, 2))
+        obj2.dynamicSize = CGSize(width: 10.1, height: 12.1)
+        obj2.size = CGSize(width: 10.1, height: 12.1)
+        XCTAssertEqual(obj1.dynamicSize, CGSize(width: 10.1, height: 12.1))
+        XCTAssertEqual(obj1.size, CGSize(width: 1, height: 2))
         
-        obj2.dynamicData = NSString(string: "data2").dataUsingEncoding(NSUTF8StringEncoding)!
-        obj2.data = NSString(string: "data2").dataUsingEncoding(NSUTF8StringEncoding)!
+        obj2.dynamicData = "data2".data(using: String.Encoding.utf8)!
+        obj2.data = "data2".data(using: String.Encoding.utf8)!
         XCTAssertEqual(obj1.dynamicData, obj2.data)
         XCTAssertEqual(obj1.data, data)
         
@@ -56,10 +56,10 @@ class MirrorObjectTests: XCTestCase {
     }
     
     func testMirrorInit() {
-        let data = NSString(string: "data").dataUsingEncoding(NSUTF8StringEncoding)!
-        let data2 = NSString(string: "data2").dataUsingEncoding(NSUTF8StringEncoding)!
-        let obj1 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
-        let obj2 = MockObject(id: "1", name: "Jack2", count: 4, float: 1.2, size: CGSizeMake(3, 4), data: data2, createdAt: 123456790)
+        let data = "data".data(using: String.Encoding.utf8)!
+        let data2 = "data2".data(using: String.Encoding.utf8)!
+        let obj1 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSize(width: 1, height: 2), data: data, createdAt: 123456789)
+        let obj2 = MockObject(id: "1", name: "Jack2", count: 4, float: 1.2, size: CGSize(width: 3, height: 4), data: data2, createdAt: 123456790)
         
         XCTAssertEqual(obj1.dynamicName, "Jack")
         XCTAssertEqual(obj1.name, "Jack")
@@ -67,8 +67,8 @@ class MirrorObjectTests: XCTestCase {
         XCTAssertEqual(obj1.count, 3)
         XCTAssertEqual(obj1.dynamicFloat, 1.1)
         XCTAssertEqual(obj1.float, 1.1)
-        XCTAssertEqual(obj1.dynamicSize, CGSizeMake(1, 2))
-        XCTAssertEqual(obj1.size, CGSizeMake(1, 2))
+        XCTAssertEqual(obj1.dynamicSize, CGSize(width: 1, height: 2))
+        XCTAssertEqual(obj1.size, CGSize(width: 1, height: 2))
         XCTAssertEqual(obj1.dynamicData, data)
         XCTAssertEqual(obj1.data, data)
         XCTAssertEqual(obj1.dynamicCreatedAt, 123456789)
@@ -86,8 +86,8 @@ class MirrorObjectTests: XCTestCase {
         XCTAssertEqual(obj1.count, 3)
         XCTAssertEqual(obj1.dynamicFloat, 1.2)
         XCTAssertEqual(obj1.float, 1.1)
-        XCTAssertEqual(obj1.dynamicSize, CGSizeMake(3, 4))
-        XCTAssertEqual(obj1.size, CGSizeMake(1, 2))
+        XCTAssertEqual(obj1.dynamicSize, CGSize(width: 3, height: 4))
+        XCTAssertEqual(obj1.size, CGSize(width: 1, height: 2))
         XCTAssertEqual(obj1.dynamicData, data2)
         XCTAssertEqual(obj1.data, data)
         XCTAssertEqual(obj1.dynamicCreatedAt, 123456790)
@@ -96,15 +96,15 @@ class MirrorObjectTests: XCTestCase {
     
     func testPerformanceCreateObjects() {
         var objects: [MockObject] = []
-        self.measureBlock() {
+        self.measure() {
             for i in 1...1000 {
                 objects.append(MockObject(
                     id: "\(i)",
                     name: "name:\(i)",
                     count: i,
                     float: CGFloat(i),
-                    size: CGSizeMake(CGFloat(i), CGFloat(i)),
-                    data: ("\(i)" as NSString).dataUsingEncoding(NSUTF8StringEncoding)!,
+                    size: CGSize(width: CGFloat(i), height: CGFloat(i)),
+                    data: ("\(i)" as NSString).data(using: String.Encoding.utf8.rawValue)!,
                     createdAt: Int64(i))
                 )
             }
@@ -119,19 +119,19 @@ class MirrorObjectTests: XCTestCase {
                 name: "name:\(i)",
                 count: i,
                 float: CGFloat(i),
-                size: CGSizeMake(CGFloat(i), CGFloat(i)),
-                data: ("\(i)" as NSString).dataUsingEncoding(NSUTF8StringEncoding)!,
+                size: CGSize(width: CGFloat(i), height: CGFloat(i)),
+                data: ("\(i)" as NSString).data(using: String.Encoding.utf8.rawValue)!,
                 createdAt: Int64(i))
             )
         }
 
-        self.measureBlock() {
+        self.measure() {
             for i in 0..<(objects.count/10) {
                 objects[i].dynamicName = "Foo"
                 objects[i].dynamicCount = 5
                 objects[i].dynamicFloat = 2.3
-                objects[i].dynamicSize = CGSizeMake(10.1, 12.1)
-                objects[i].dynamicData = NSString(string: "data2").dataUsingEncoding(NSUTF8StringEncoding)!
+                objects[i].dynamicSize = CGSize(width: 10.1, height: 12.1)
+                objects[i].dynamicData = "data2".data(using: String.Encoding.utf8)!
                 objects[i].dynamicCreatedAt = 234567890
             }
         }
@@ -148,9 +148,9 @@ class MirrorObjectTests: XCTestCase {
     }
     
     func testExcludProperties() {
-        let data = NSString(string: "data").dataUsingEncoding(NSUTF8StringEncoding)!
-        let obj1 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
-        let obj2 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
+        let data = "data".data(using: String.Encoding.utf8)!
+        let obj1 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSize(width: 1, height: 2), data: data, createdAt: 123456789)
+        let obj2 = MockObject(id: "1", name: "Jack", count: 3, float: 1.1, size: CGSize(width: 1, height: 2), data: data, createdAt: 123456789)
         
         obj2.excP1 = 20
         obj2.excP2 = "change"
@@ -159,9 +159,9 @@ class MirrorObjectTests: XCTestCase {
     }
     
     func testMirrorDisable() {
-        let data = NSString(string: "data").dataUsingEncoding(NSUTF8StringEncoding)!
-        let obj1 = MockObject(id: "dummy", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
-        let obj2 = MockObject(id: "dummy", name: "Jack", count: 3, float: 1.1, size: CGSizeMake(1, 2), data: data, createdAt: 123456789)
+        let data = "data".data(using: String.Encoding.utf8)!
+        let obj1 = MockObject(id: "dummy", name: "Jack", count: 3, float: 1.1, size: CGSize(width: 1, height: 2), data: data, createdAt: 123456789)
+        let obj2 = MockObject(id: "dummy", name: "Jack", count: 3, float: 1.1, size: CGSize(width: 1, height: 2), data: data, createdAt: 123456789)
         
         obj2.dynamicName = "Foo"
         XCTAssertEqual(obj1.dynamicName, "Jack")
@@ -175,7 +175,7 @@ class MockObject: NSObject, MirrorObject {
     dynamic var dynamicCount: Int
     dynamic var dynamicFloat: CGFloat
     dynamic var dynamicSize: CGSize
-    dynamic var dynamicData: NSData
+    dynamic var dynamicData: Data
     dynamic var dynamicCreatedAt: Int64 // ms
     
     dynamic var excP1: Int = 10
@@ -190,10 +190,10 @@ class MockObject: NSObject, MirrorObject {
     var count: Int
     var float: CGFloat
     var size: CGSize
-    var data: NSData
+    var data: Data
     var createdAt: Int64 // ms
     
-    init(id: String, name: String, count: Int, float: CGFloat, size: CGSize, data: NSData, createdAt: Int64) {
+    init(id: String, name: String, count: Int, float: CGFloat, size: CGSize, data: Data, createdAt: Int64) {
         self.id = id
         self.dynamicName = name
         self.dynamicCount = count
