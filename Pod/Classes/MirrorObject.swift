@@ -29,7 +29,7 @@ extension MirrorObject {
     
     // MARK: - Notification
     func mirrorNotificationName() -> String? {
-        if let identifier = self.identifier?(), let className = NSStringFromClass(Self).components(separatedBy: ".").last {
+        if let identifier = self.identifier?(), let className = NSStringFromClass(Self.self).components(separatedBy: ".").last {
             return "MirrorObject_\(className)_\(identifier)"
         } else {
             return nil
