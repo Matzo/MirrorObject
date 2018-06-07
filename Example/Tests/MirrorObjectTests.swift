@@ -171,17 +171,17 @@ class MirrorObjectTests: XCTestCase {
 class MockObject: NSObject, MirrorObject {
     var id: String
 
-    dynamic var dynamicName: String
-    dynamic var dynamicCount: Int
-    dynamic var dynamicFloat: CGFloat
-    dynamic var dynamicSize: CGSize
-    dynamic var dynamicData: Data
-    dynamic var dynamicCreatedAt: Int64 // ms
+    @objc dynamic var dynamicName: String
+    @objc dynamic var dynamicCount: Int
+    @objc dynamic var dynamicFloat: CGFloat
+    @objc dynamic var dynamicSize: CGSize
+    @objc dynamic var dynamicData: Data
+    @objc dynamic var dynamicCreatedAt: Int64 // ms
     
-    dynamic var excP1: Int = 10
-    dynamic var excP2: String = "p2"
+    @objc dynamic var excP1: Int = 10
+    @objc dynamic var excP2: String = "p2"
     
-    dynamic var doCrash: String {
+    @objc dynamic var doCrash: String {
         assertionFailure("shouldn't access here")
         return ""
     }
@@ -233,7 +233,7 @@ class MockObject: NSObject, MirrorObject {
 
 class ParentMockObject: NSObject, MirrorObject {
     var id : String
-    dynamic var dynamicChild: ChildMockObject
+    @objc dynamic var dynamicChild: ChildMockObject
     
     init(id: String, child: ChildMockObject) {
         self.id = id
@@ -253,8 +253,8 @@ class ParentMockObject: NSObject, MirrorObject {
 }
 
 class ChildMockObject: NSObject, MirrorObject {
-    dynamic var type: String
-    dynamic var value: Int
+    @objc dynamic var type: String
+    @objc dynamic var value: Int
     var createdAt: Int64
     init(type: String, value: Int, createdAt: Int64) {
         self.type      = type

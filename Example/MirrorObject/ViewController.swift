@@ -41,10 +41,10 @@ class ViewController: UIViewController {
 
 
 class Foo: NSObject, MirrorObject {
-    var id: String
-    dynamic var name: String
-    dynamic var followers: Int
-    dynamic var location: String
+    @objc var id: String
+    @objc dynamic var name: String
+    @objc dynamic var followers: Int
+    @objc dynamic var location: String
     
     init(id: String, name: String, followers: Int, location: String) {
         self.id        = id

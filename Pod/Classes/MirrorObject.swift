@@ -56,8 +56,8 @@ extension MirrorObject {
 
         // use label for performance
         props: for i in 0..<Int(count) {
-            let prop = properties?[i]
-            if let name = NSString(utf8String: property_getName(prop)) as? String {
+            guard let prop = properties?[i] else { continue }
+            if let name = NSString(utf8String: property_getName(prop)) as String? {
                 
                 // exlude specified properties
                 for i in 0..<excludes.count {
@@ -66,7 +66,7 @@ extension MirrorObject {
                     }
                 }
                 
-                if let props = NSString(utf8String: property_getAttributes(prop))?.range(of: ",R"), props.location == NSNotFound
+                if let attr = property_getAttributes(prop), let props = NSString(utf8String: attr)?.range(of: ",R"), props.location == NSNotFound
                 {
                     names.append(name)
                 }
