@@ -7,7 +7,7 @@ before_install:
 before_script:
     #  - bundle exec pod install --project-directory=Example
 
-script: xcodebuild -workspace Example/MirrorObject.xcworkspace -scheme MirrorObject-Example -destination 'platform=iOS Simulator,name=iPhone 6,OS=8.4' test
+script: xcodebuild -workspace Example/MirrorObject.xcworkspace -scheme MirrorObject-Example -destination 'platform=iOS Simulator,name=iPhone X,OS=11.4' test
 
 branches:
   only:
