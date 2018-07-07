@@ -1,11 +1,11 @@
 language: objective-c
-osx_image: xcode8
+osx_image: xcode9.4
 
 before_install:
-  - gem install cocoapods -v 1.1.1 --no-document
+  - bundle install --path vender
 
 before_script:
-  - pod install --project-directory=Example
+    #  - bundle exec pod install --project-directory=Example
 
 script: xcodebuild -workspace Example/MirrorObject.xcworkspace -scheme MirrorObject-Example -destination 'platform=iOS Simulator,name=iPhone 6,OS=8.4' test
 

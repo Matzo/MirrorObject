@@ -1,6 +1,6 @@
 {
   "name": "MirrorObject",
-  "version": "0.1.4",
+  "version": "1.1.0",
   "summary": "Mirroring dynamic properties automatically.",
   "description": "Copy dynamic properties of objects that have same identifier.",
   "homepage": "https://github.com/Matzo/MirrorObject",
@@ -10,11 +10,12 @@
   },
   "source": {
     "git": "https://github.com/Matzo/MirrorObject.git",
-    "tag": "0.1.4"
+    "tag": "1.1.0"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "9.0"
   },
   "requires_arc": true,
+  "swift_version": "4.1",
   "source_files": "Pod/Classes/**/*"
 }
